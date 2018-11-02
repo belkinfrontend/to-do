@@ -35,7 +35,6 @@ export default class Component {
     this.onComponentMount();
   }
 
-
   /**
    * 'eventName @@ elementQuery': callbackFn
    */

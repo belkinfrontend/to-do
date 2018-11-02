@@ -1,4 +1,5 @@
 @import "_vars";
+@import '_override';
 
 body {
   min-height: 100vh;
@@ -212,7 +213,7 @@ body {
 
       .new-section {
         border: none;
-        border: 3px dashed #212121;
+        border: 1.5px dashed #212121;
         border-radius: 10px;
         display: flex;
         align-items: center;

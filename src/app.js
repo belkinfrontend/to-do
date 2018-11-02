@@ -49,37 +49,9 @@ export default class App {
         console.log('got data from server', columns);
         board.model.columns = columns;
       })
-
-
-    // setTimeout(() => {
-    //   console.log('updated data!');
-    //   board.model.columns = [
-    //       {
-    //         name: 'To Do',
-    //         id: '100',
-    //         items: [
-    //           {
-    //             id: 1,
-    //             title: 'hello world!'
-    //           },
-    //           {
-    //             id: 2,
-    //             title: 'foobar'
-    //           }
-    //         ]
-    //       },
-    //       {
-    //         name: 'Done',
-    //         id: '101',
-    //         items: []
-    //       },
-    //       {
-    //         name: 'Archive',
-    //         id: '102',
-    //         items: []
-    //       }
-    //     ];
-    // }, 5000);
+      .catch((e) => {
+        console.log('Error!', e);
+      });
   }
 
   template = t`
