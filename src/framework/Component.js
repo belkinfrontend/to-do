@@ -19,6 +19,7 @@ export default class Component {
 
     /* set HTML id to container HTML element */
     this.containerElement.id = `view_${this.id}`;
+    this.containerElement.setAttribute('class', 'container');
   }
 
 

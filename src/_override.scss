@@ -1,3 +1,20 @@
 .btn-floating:hover {
     background-color: lighten($secondary-txt-color, 5%);
 }
+
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}
+/* optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+    background: #FF0000;
+}
+
+#nav-mobile {
+    text-transform: uppercase;
+}
+
+.pulse {
+    margin: 0 auto;
+}

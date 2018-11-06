@@ -8,11 +8,6 @@ export const getColumns = () => {
     });
   }
 
-// () => fetch()
-// () => { return fetch() }
-
-// () => { fetch() }
-
 export const createColumn = (columnData) => {
   return fetch(`${rootUrl}/columns`, { 
     method: 'POST',
@@ -61,6 +56,14 @@ export const createPost = (postData, columnId) => {
   });   
 }
 
-// export const createItems = () =>
-//   fetch(`${rootUrl}/columns`, {method: 'get'})
-//     .then(res => res.json());
+export const removePost = (postId, columnId) => {
+
+  return fetch(`${rootUrl}/columns/${columnId}/${postId}`, { method: 'DELETE' })
+  .then((res) => {
+    if(res.ok) {
+      return res.json();
+    } else {
+      throw new Error('something wrong with server');
+    }
+  }); 
+}

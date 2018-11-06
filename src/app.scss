@@ -1,76 +1,40 @@
+//@import "_reset";
+@import "_common";
 @import "_vars";
 @import '_override';
 
 body {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  align-content: stretch;
+//   display: flex;
+//   flex-direction: column;
+//   flex-wrap: nowrap;
+//   align-items: stretch;
+//   align-content: stretch;
   margin: 0;
   padding: 0;
   background: slategrey;
   color: #212121;
+  overflow: scroll !important;
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background-color: lavender;
-    .person {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .avatar {
-            height: 70px;
-            width: 70px;
-            margin-right: 20px;
-            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVdeWQxpUyMoGkXCIieOqUsbWJ96uPMr4TTFPoCV7H9Kgta270');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-    }
-    .links {
-        text-align: right;
-        a {
-            font-size: 1.2rem;
-            color: $secondary-txt-color;
-            padding: 0 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-            &:hover {
-                text-decoration: underline;
-                color: darken($secondary-txt-color, 10%);
-            }
-        }
-    }
-}
 
   #outlet {
-    flex-basis: 100%;
-    flex-grow: 1;
+    // flex-basis: 100%;
+    // flex-grow: 1;
     background-color: slategrey;
 
     .board {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: center;
-      align-items: flex-start;
       background: slategrey;
       min-height: 100vh;
       
-      section {
+      .col {
         min-height: 400px;
+        max-height: 400px;
+        overflow-y: scroll; 
         background-color: #E3E3E3;
         box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
         border-radius: 6px;
-        margin: 25px 15px;
-        flex-basis: 338px;
+        margin: 25px 0px;
+        //flex-basis: 338px;
         header {
             background: $secondary-txt-color;
             position: relative;
@@ -89,7 +53,6 @@ body {
                 position: absolute;
                 right: 10px;
                 cursor: pointer;
-                color: brown;
 
                 &:hover {
                     color:lighten(brown, 10%)
@@ -150,32 +113,6 @@ body {
                 opacity: 0;
                 transition: opacity 0.3s ease;
             }
-            // button {
-            //     width: 50px;
-            //     height: 50px;
-            //     position: absolute;
-            //     right: 3px;
-            //     z-index: 2;
-            //     border-radius: 25px;
-            //     background: #fff;
-            //     border: 0px;
-            //     box-shadow: none;
-            //     outline: none;
-            //     cursor: pointer;
-            //     -webkit-appearance: none;
-            //     -moz-appearance: none;
-            //     svg {
-            //         width: 16px;
-            //         height: 16px;
-            //         position: absolute;
-            //         top: 50%;
-            //         left: 50%;
-            //         margin: -8px 0 0 -8px;
-            //         .fill {
-            //             fill: $secondary-txt-color;
-            //         }
-            //     }
-            // }
         }
 
         ul {
@@ -183,7 +120,7 @@ body {
           padding: 10px;
           max-width: 100%;
           li {
-              list-style-type: none; 
+              position: relative;
               text-align: justify;
               border-radius: 3px;
               margin-top: 5px;
@@ -200,12 +137,18 @@ body {
                   border-radius: 3px;
               }
 
-              span {
+              p {
                   display: block;
 
                   &:nth-child(2n) {
                       font-weight: bold;
                   }
+              }
+
+              span {
+                  position: absolute;
+                  right: 0;
+                  top: 0;
               }
           }
       }
@@ -215,9 +158,9 @@ body {
         border: none;
         border: 1.5px dashed #212121;
         border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
         span {
             color: var($secondary-txt-color);
             opacity: .5;
