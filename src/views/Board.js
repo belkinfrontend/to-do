@@ -20,6 +20,7 @@ export default class Board extends Component {
         .then(() => {
           // hide loader
           this.model.columns.push(newColumn);
+          console.log(this.model.columns);
         })
         .catch((e) => {
           // hide loader
@@ -42,15 +43,25 @@ export default class Board extends Component {
     'click @@ .remove-post': ({ target }) => {
       const postTarget = target;
       const postId = target.dataset.postid;
-      console.log(postId);
+
+      this.currentPostId = target.dataset.postid;
+      console.log(this.currentPostId);
 
       //postTarget.parentNode.parentNode.remove();
 
       removePost(postId, this.currentColumnId)
         .then(() => {
           //this.model.columns = this.model.columns.filter(() => postTarget.parentNode.parentNode.remove());
-          postTarget.parentNode.parentNode.remove();
-          console.log(this.model.columns);
+          
+          this.model.columns.forEach((columnData) => {
+            console.log(columnData);
+              
+            if(postId === this.currentPostId) {
+              postTarget.parentNode.parentNode.remove();
+            }
+          });
+          
+          //postTarget.parentNode.parentNode.remove();
         })
         .catch((e) => {
           console.log(e);
@@ -65,12 +76,12 @@ export default class Board extends Component {
       this.modal.open();
     },
 
-    'click @@ #createPost': () => {
-      let id = Math.floor(Math.random()*1000);
+    'click @@ #buttonCreatePost': () => {
+      let id = (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16);
       let title = document.querySelector('#title').value;
       let text = document.querySelector('#text').value;
       let date = new Date().toDateString();
-      let time = `${new Date().getHours()} hours  ${new Date().getMinutes()} minutes`;
+      let time = `${new Date().getHours()} hours ${new Date().getMinutes()} minutes`;
 
       // ============= validate text, title, etc.
       const escapeHtml = (text) => {
@@ -104,6 +115,7 @@ export default class Board extends Component {
           .then(() => {
             // hide loader
             this.model.columns.forEach((columnData) => {
+              
               if(columnData.id === this.currentColumnId) {
                 columnData.items.push(newItem);
               }
@@ -165,7 +177,7 @@ export default class Board extends Component {
           </div>
           </div>
         <div class="modal-footer">
-            <a class="waves-effect waves-light btn" id="createPost">Create</a>
+            <a class="waves-effect waves-light btn" id="buttonCreatePost">Create</a>
         </div>
       </div>
     </div>
