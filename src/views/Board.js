@@ -30,6 +30,7 @@ export default class Board extends Component {
     },
     'click @@ .remove-column': ({ target }) => {
       const columnId = target.id;
+      console.log(columnId);
 
       removeColumn(columnId)
         .then(() => {
@@ -42,32 +43,52 @@ export default class Board extends Component {
 
     'click @@ .remove-post': ({ target }) => {
       const postTarget = target;
-      const postId = target.dataset.postid;
+      const currentPostId = target.id;
 
-      this.currentPostId = target.dataset.postid;
-      console.log(this.currentPostId);
+      console.log("currentPostId = " + currentPostId);
+
+      const currentColumnId = postTarget.closest('section').dataset.columnid;
+      console.log("currentColumnId = " + currentColumnId);
+
 
       //postTarget.parentNode.parentNode.remove();
 
-      removePost(postId, this.currentColumnId)
+      removePost(currentPostId, currentColumnId)
+
         .then(() => {
-          //this.model.columns = this.model.columns.filter(() => postTarget.parentNode.parentNode.remove());
+          //console.log(this.model.columns);
+          // this.model.columns = this.model.columns.filter(({ id }) => id !== currentPostId);
+
+          //===== TEST
+
+          let mapped = this.model.columns.map(elem => elem.items);
+          console.log(mapped);
           
-          this.model.columns.forEach((columnData) => {
-            console.log(columnData);
-              
-            if(postId === this.currentPostId) {
-              postTarget.parentNode.parentNode.remove();
-            }
-          });
+          let mapped_2 = mapped.map(items => items[0].id);
+          console.log(mapped_2);
+
+          if ( mapped_2 == currentPostId ) {
+            console.log('mapped_2 == currentPostId')
+            this.model.columns = mapped.filter(({ id }) => id !== currentPostId);
+          }
           
-          //postTarget.parentNode.parentNode.remove();
+          
         })
         .catch((e) => {
           console.log(e);
         });
-            
-  
+
+        // .then(() => {
+        //   this.model.columns.forEach((columnData) => {
+        //     console.log(columnData);
+              
+        //     if(postId === this.currentPostId) {
+        //       postTarget.parentNode.parentNode.remove();
+        //     }
+        //   });
+          
+          //postTarget.parentNode.parentNode.remove();
+
     },
 
     'click @@ .modalOpener': (event) => {
@@ -138,10 +159,10 @@ export default class Board extends Component {
       <p>${text}</p>
       <p>${date}</p>
       <p>${time}</p>
-      <span><i class="material-icons remove-post red-text text-darken-3" data-postId=${id}>delete</i></span>
+      <span><i class="material-icons remove-post red-text text-darken-3" id=${id}>delete</i></span>
     </li>`;
 
-  createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4">
+  createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id}>
         <header>
           <h5>${name}<i class="material-icons remove-column red-text text-darken-3" id="${id}">delete</i></h5>
           

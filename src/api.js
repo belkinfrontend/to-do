@@ -27,7 +27,6 @@ export const createColumn = (columnData) => {
   }
 
 export const removeColumn = (columnId) => {
-  console.log(columnId);
   return fetch(`${rootUrl}/columns/${columnId}`, { method: 'DELETE' })
     .then((res) => {
       if(res.ok) {
@@ -57,8 +56,9 @@ export const createPost = (postData, columnId) => {
 }
 
 export const removePost = (postId, columnId) => {
+  // console.log(postId, columnId);
 
-  return fetch(`${rootUrl}/columns/${columnId}/${postId}`, { method: 'DELETE' })
+  return fetch(`${rootUrl}/columns/deleteItem/${columnId}/${postId}`, { method: 'DELETE' })
   .then((res) => {
     if(res.ok) {
       return res.json();
