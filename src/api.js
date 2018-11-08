@@ -55,10 +55,10 @@ export const createPost = (postData, columnId) => {
   });   
 }
 
-export const removePost = (postId, columnId) => {
+export const removePost = (currentPostId, currentColumnId) => {
   // console.log(postId, columnId);
 
-  return fetch(`${rootUrl}/columns/deleteItem/${columnId}/${postId}`, { method: 'DELETE' })
+  return fetch(`${rootUrl}/columns/${currentColumnId}/posts/${currentPostId}`, { method: 'DELETE' })
   .then((res) => {
     if(res.ok) {
       return res.json();

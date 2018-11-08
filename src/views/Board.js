@@ -11,10 +11,11 @@ export default class Board extends Component {
   eventMap = {
     'click @@ .new-section a i': () => {
       const newColumn = {
-        name: `new column!`,
+        name: `column`,
         id: (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16),
         items: []
       };
+      newColumn.name = `${newColumn.name}-${newColumn.id}`;
       // show loader
       createColumn(newColumn)
         .then(() => {
@@ -43,52 +44,28 @@ export default class Board extends Component {
 
     'click @@ .remove-post': ({ target }) => {
       const postTarget = target;
+      
       const currentPostId = target.id;
-
       console.log("currentPostId = " + currentPostId);
+
+
+      // const currentPostId = postTarget.closest('li').dataset.postid;
+      // console.log("currentPostId = " + currentPostId);
 
       const currentColumnId = postTarget.closest('section').dataset.columnid;
       console.log("currentColumnId = " + currentColumnId);
-
 
       //postTarget.parentNode.parentNode.remove();
 
       removePost(currentPostId, currentColumnId)
 
         .then(() => {
-          //console.log(this.model.columns);
-          // this.model.columns = this.model.columns.filter(({ id }) => id !== currentPostId);
-
-          //===== TEST
-
-          let mapped = this.model.columns.map(elem => elem.items);
-          console.log(mapped);
-          
-          let mapped_2 = mapped.map(items => items[0].id);
-          console.log(mapped_2);
-
-          if ( mapped_2 == currentPostId ) {
-            console.log('mapped_2 == currentPostId')
-            this.model.columns = mapped.filter(({ id }) => id !== currentPostId);
-          }
-          
-          
+          const currentColumn = this.model.columns.find(({ id }) => id === currentColumnId);
+          currentColumn.items = currentColumn.items.filter(({ id }) => id !== currentPostId);
         })
         .catch((e) => {
           console.log(e);
         });
-
-        // .then(() => {
-        //   this.model.columns.forEach((columnData) => {
-        //     console.log(columnData);
-              
-        //     if(postId === this.currentPostId) {
-        //       postTarget.parentNode.parentNode.remove();
-        //     }
-        //   });
-          
-          //postTarget.parentNode.parentNode.remove();
-
     },
 
     'click @@ .modalOpener': (event) => {
@@ -119,7 +96,6 @@ export default class Board extends Component {
       title = escapeHtml(title);
       text = escapeHtml(text);
       
-      
       let newItem;
 
       //=========== checking for filling title
@@ -146,14 +122,11 @@ export default class Board extends Component {
             // hide loader
             console.log(e);
           });
-
-        
       }
     }
   }
   
-
-  createPost = ({ id, title, text, date, time }) => t`<li>
+  createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id}>
       <p>id = ${id}</p>
       <p>${title}</p>
       <p>${text}</p>
@@ -203,9 +176,4 @@ export default class Board extends Component {
       </div>
     </div>
   `;
-
-  onComponentMount = () => {
-    //const modalEl = document.querySelector('.modal');
-    // this.modal = M.Modal.init(document.querySelector('.modal'));
-  }
 }
