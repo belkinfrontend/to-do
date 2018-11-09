@@ -1,5 +1,5 @@
 import { Component, t } from '../framework';
-import { createColumn, removeColumn, createPost, removePost } from '../api';
+import { createColumn, removeColumn, createPost, removePost, updatePost } from '../api';
 //import Materialize from 'materialize-css';
 
 
@@ -42,17 +42,14 @@ export default class Board extends Component {
         });
     },
 
+    // ====== REMOVE POST ====== //
+
     'click @@ .remove-post': ({ target }) => {
-      const postTarget = target;
       
       const currentPostId = target.id;
       console.log("currentPostId = " + currentPostId);
 
-
-      // const currentPostId = postTarget.closest('li').dataset.postid;
-      // console.log("currentPostId = " + currentPostId);
-
-      const currentColumnId = postTarget.closest('section').dataset.columnid;
+      const currentColumnId = target.closest('section').dataset.columnid;
       console.log("currentColumnId = " + currentColumnId);
 
       //postTarget.parentNode.parentNode.remove();
@@ -62,6 +59,31 @@ export default class Board extends Component {
         .then(() => {
           const currentColumn = this.model.columns.find(({ id }) => id === currentColumnId);
           currentColumn.items = currentColumn.items.filter(({ id }) => id !== currentPostId);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
+    // ====== UPDATE POST ====== //
+
+    'click @@ #buttonUpdatePost': ({ target }) => {
+      this.modal = M.Modal.init(document.querySelector('.modal'));
+      this.modal.open();
+
+      const currentPostId = target.id;
+      const currentColumnId = target.closest('section').dataset.columnid;
+
+      document.querySelector('#title').focus();
+      document.querySelector('#title').value = "title";
+      document.querySelector('#text').value = "description";
+
+      console.log(currentColumnId);
+
+      updatePost(currentPostId, currentColumnId)
+        .then(() => {
+          // const currentColumn = this.model.columns.find(({ id }) => id === currentColumnId);
+          // currentColumn.items = currentColumn.items.filter(({ id }) => id !== currentPostId);
         })
         .catch((e) => {
           console.log(e);
@@ -133,6 +155,7 @@ export default class Board extends Component {
       <p>${date}</p>
       <p>${time}</p>
       <span><i class="material-icons remove-post red-text text-darken-3" id=${id}>delete</i></span>
+      <a class="waves-effect waves-light btn-small" id="buttonUpdatePost">Edit post</a>
     </li>`;
 
   createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id}>

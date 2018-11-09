@@ -22,7 +22,6 @@ export default class Component {
     this.containerElement.setAttribute('class', 'container');
   }
 
-
   /**
    * @param {*} root - Root HTML element to contain view representation.
    */

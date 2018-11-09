@@ -67,3 +67,16 @@ export const removePost = (currentPostId, currentColumnId) => {
     }
   }); 
 }
+
+export const updatePost = (currentPostId, currentColumnId) => {
+  // console.log(postId, columnId);
+
+  return fetch(`${rootUrl}/columns/${currentColumnId}/posts/${currentPostId}`, { method: 'PUT' })
+  .then((res) => {
+    if(res.ok) {
+      return res.json();
+    } else {
+      throw new Error('something wrong with server');
+    }
+  }); 
+}

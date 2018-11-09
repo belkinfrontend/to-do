@@ -6,12 +6,6 @@ import Calendar from './views/Calendar';
 import Board from './views/Board';
 
 
-
-// document.querySelector('.sidenav-trigger').addEventListener('click', function() {
-//   var elems = document.querySelector('.sidenav');
-//   var instances = M.Sidenav.init(elems, options);
-// });
-
 export default class App {
   constructor(mainElement = document.querySelector('body')) {
     const calendar = new Calendar({ name: 'Calendar' });
@@ -21,9 +15,7 @@ export default class App {
     const outlet = document.querySelector('#outlet');
 
     this.eventBus = new EventBus();
-
-    //this.sidenav = M.Sidenav.init(document.querySelector('.sidenav-trigger'));
-
+    
     this.eventBus.subscribe('routeChanged', (page) => {
       switch (page) {
         case 'main':
@@ -38,6 +30,8 @@ export default class App {
           break;
       }
     });
+
+    
     this.router = new Router({
       '#main': () => {
         this.eventBus.publish('routeChanged', 'main');
@@ -47,12 +41,6 @@ export default class App {
       }
     });
     this.mainElement = mainElement;
-
-
-    // fetch('server/columns')
-    //  .then((data) => {
-    //    board.model.columns = data;
-    //  })
 
     getColumns()
       .then((columns) => {
@@ -86,9 +74,6 @@ export default class App {
 
   render() {
     this.mainElement.innerHTML = this.template;
-
-    // this.sidenav = M.Sidenav.init(document.querySelector('.sidenav'));
-    // this.sidenav.open();
 
     document.querySelector('.sidenav-trigger').addEventListener('click', function() {
       
