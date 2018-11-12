@@ -68,10 +68,17 @@ export const removePost = (currentPostId, currentColumnId) => {
   }); 
 }
 
-export const updatePost = (currentPostId, currentColumnId) => {
-  // console.log(postId, columnId);
+export const updatePost = (postData, currentColumnId) => {
+  console.log(postData, currentColumnId);
 
-  return fetch(`${rootUrl}/columns/${currentColumnId}/posts/${currentPostId}`, { method: 'PUT' })
+  return fetch(`${rootUrl}/columns/${currentColumnId}/posts/${postData.id}`, {
+     method: 'PUT',
+     headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(postData)
+    })
   .then((res) => {
     if(res.ok) {
       return res.json();

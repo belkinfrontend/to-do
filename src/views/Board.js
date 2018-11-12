@@ -65,44 +65,37 @@ export default class Board extends Component {
         });
     },
 
+
+
     // ====== UPDATE POST ====== //
 
-    'click @@ #buttonUpdatePost': ({ target }) => {
-      this.modal = M.Modal.init(document.querySelector('.modal'));
-      this.modal.open();
+    'click @@ .buttonUpdatePost': ({ target }) => {
 
-      const currentPostId = target.id;
-      const currentColumnId = target.closest('section').dataset.columnid;
+      this.currentColumnId = target.closest('section').dataset.columnid;
+      const currentPostId = target.closest('li').dataset.postid;
+      const post = this.getPost(this.currentColumnId, currentPostId);
 
-      document.querySelector('#title').focus();
-      document.querySelector('#title').value = "title";
-      document.querySelector('#text').value = "description";
-
-      console.log(currentColumnId);
-
-      updatePost(currentPostId, currentColumnId)
-        .then(() => {
-          // const currentColumn = this.model.columns.find(({ id }) => id === currentColumnId);
-          // currentColumn.items = currentColumn.items.filter(({ id }) => id !== currentPostId);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      this.openPostModal(post);
     },
 
     'click @@ .modalOpener': (event) => {
       this.currentColumnId = event.target.dataset.columnid;
-      this.modal = M.Modal.init(document.querySelector('.modal'));
-      this.modal.open();
+
+      document.querySelector('#buttonCreatePost').textContent = 'create';
+      document.querySelector('.modal-content h4').textContent = 'Creare a new post';
+      this.openPostModal({});
     },
 
     'click @@ #buttonCreatePost': () => {
-      let id = (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16);
-      let title = document.querySelector('#title').value;
-      let text = document.querySelector('#text').value;
-      let date = new Date().toDateString();
-      let time = `${new Date().getHours()} hours ${new Date().getMinutes()} minutes`;
+      console.log(document.querySelectorAll('#text'));
+      
+      this.postModalData.title = document.querySelector('#title').value;
+      this.postModalData.text = document.querySelector('#text').value;
+      this.postModalData.date = new Date().toDateString();
+      this.postModalData.time = `${new Date().getHours()} hours ${new Date().getMinutes()} minutes`;
 
+      console.log(this.postModalData.title, this.postModalData.text, document.querySelector('#text').value);
+      
       // ============= validate text, title, etc.
       const escapeHtml = (text) => {
         let map = {
@@ -115,39 +108,78 @@ export default class Board extends Component {
       
         return text.replace(/[&<>"']/g, function(m) { return map[m]; });
       }
-      title = escapeHtml(title);
-      text = escapeHtml(text);
+      this.postModalData.title = escapeHtml(this.postModalData.title);
+      this.postModalData.text = escapeHtml(this.postModalData.text);
       
-      let newItem;
-
       //=========== checking for filling title
-      if(title) {
-        newItem = {
-          id,
-          title,
-          text,
-          date,
-          time
-        }
+      if(this.postModalData) {
+        if (this.postModalData.id){
+          updatePost(this.postModalData, this.currentColumnId)
+          .then(()=>{
+            const column = this.model.columns
+              .find((columnData) => columnData.id === this.currentColumnId);
 
-        createPost(newItem, this.currentColumnId)
-          .then(() => {
-            // hide loader
-            this.model.columns.forEach((columnData) => {
-              
-              if(columnData.id === this.currentColumnId) {
-                columnData.items.push(newItem);
-              }
-            });
+            column.items = column.items.map(item => {
+                if (item.id === this.postModalData.id){
+                  return this.postModalData;
+                } else {
+                  return item;
+                }
+              })
           })
           .catch((e) => {
             // hide loader
             console.log(e);
           });
+        } else {
+          this.postModalData.id = this.postModalData.id || (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16);
+  
+          createPost(this.postModalData, this.currentColumnId)
+            .then(() => {
+              // hide loader
+              this.model.columns.forEach((columnData) => {
+                
+                if(columnData.id === this.currentColumnId) {
+                  columnData.items.push(this.postModalData);
+                }
+              });
+            })
+            .catch((e) => {
+              // hide loader
+              console.log(e);
+            });
+        }  
       }
     }
   }
   
+  openPostModal(data){
+    console.log(data);
+    this.postModalData = data;
+    this.modal = M.Modal.init(document.querySelector('.modal'));
+    this.modal.open();
+
+    document.querySelector('#title').focus();
+    document.querySelector('#title').value = data.title || '';
+    document.querySelector('#text').value = data.text || '';
+  }
+
+  getPost(columnId, postId){
+    console.log('looking for post =>', columnId, postId);
+    const column = this.model.columns.find(c => c.id === columnId);
+    console.log(column);
+
+    if (column){
+      document.querySelector('#buttonCreatePost').textContent = 'update';
+      document.querySelector('.modal-content h4').textContent = 'Update this post';
+      
+      return column.items.find(i => i.id === postId);
+    } else {
+      return null;
+    }
+
+  }
+
   createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id}>
       <p>id = ${id}</p>
       <p>${title}</p>
@@ -155,7 +187,7 @@ export default class Board extends Component {
       <p>${date}</p>
       <p>${time}</p>
       <span><i class="material-icons remove-post red-text text-darken-3" id=${id}>delete</i></span>
-      <a class="waves-effect waves-light btn-small" id="buttonUpdatePost">Edit post</a>
+      <a class="waves-effect waves-light btn-small buttonUpdatePost" id=${id}>Edit post</a>
     </li>`;
 
   createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id}>
@@ -181,7 +213,7 @@ export default class Board extends Component {
 
       <div class="modal">
         <div class="modal-content">
-          <h4>Create a new TODO-item</h4>
+          <h4></h4>
 
           <div class="input-field">
               <input id="title" type="text" class="validate valid" required="" data-length="80">
@@ -194,7 +226,7 @@ export default class Board extends Component {
           </div>
           </div>
         <div class="modal-footer">
-            <a class="waves-effect waves-light btn" id="buttonCreatePost">Create</a>
+            <a class="waves-effect waves-light btn" id="buttonCreatePost"></a>
         </div>
       </div>
     </div>
