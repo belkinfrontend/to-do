@@ -91,8 +91,8 @@ export default class Board extends Component {
       
       this.postModalData.title = document.querySelector('#title').value;
       this.postModalData.text = document.querySelector('#text').value;
-      this.postModalData.date = new Date().toDateString();
-      this.postModalData.time = `${new Date().getHours()} hours ${new Date().getMinutes()} minutes`;
+      this.postModalData.date = this.formatDate(new Date());
+      this.postModalData.time = ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2);
 
       console.log(this.postModalData.title, this.postModalData.text, document.querySelector('#text').value);
       
@@ -125,7 +125,9 @@ export default class Board extends Component {
                 } else {
                   return item;
                 }
-              })
+              });
+
+              // this.model.columns
           })
           .catch((e) => {
             // hide loader
@@ -151,6 +153,21 @@ export default class Board extends Component {
         }  
       }
     }
+  }
+
+  formatDate(date) {
+    let monthNames = [
+      "January", "February", "March",
+      "April", "May", "June", "July",
+      "August", "September", "October",
+      "November", "December"
+    ];
+  
+    let day = date.getDate();
+    let monthIndex = date.getMonth();
+    let year = date.getFullYear();
+  
+    return day + ' ' + monthNames[monthIndex] + ' ' + year;
   }
   
   openPostModal(data){
@@ -180,14 +197,17 @@ export default class Board extends Component {
 
   }
 
-  createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id}>
+  createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id} draggable="true">
+
       <p>id = ${id}</p>
       <p>${title}</p>
       <p>${text}</p>
-      <p>${date}</p>
-      <p>${time}</p>
+      <p class="date">${date}</p>
+      <p class="date">${time}</p>
       <span><i class="material-icons remove-post red-text text-darken-3" id=${id}>delete</i></span>
-      <a class="waves-effect waves-light btn-small buttonUpdatePost" id=${id}>Edit post</a>
+      <p>
+        <a class="waves-effect waves-light btn-small buttonUpdatePost" id=${id}>Edit post</a>
+      </p>
     </li>`;
 
   createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id}>
@@ -198,7 +218,7 @@ export default class Board extends Component {
 
           <button data-target="modal1" data-columnId=${id} class="btn modalOpener blue-grey add-${id}">Modal</button>
         </header>
-        <ul class="content">
+        <ul class="content js-sortable sortable">
           ${items.map(this.createPost).join('')}
         </ul>
     </section>`;

@@ -67,9 +67,12 @@ export default class Component {
   }
 
   clearRoot() {
-    while (this.rootElement.firstChild) {
-      this.rootElement.removeChild(this.rootElement.firstChild);
+    if(this.rootElement) {
+      while (this.rootElement.firstChild) {
+        this.rootElement.removeChild(this.rootElement.firstChild);
+      }
     }
+    
   }
 
   unmount() {

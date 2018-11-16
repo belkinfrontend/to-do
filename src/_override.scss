@@ -10,7 +10,12 @@
 ::-webkit-scrollbar-thumb {
     background: #FF0000;
 }
-
+h1 {
+    margin: 0;
+}
+nav {
+    background-color: #e66053;
+}
 #nav-mobile {
     text-transform: uppercase;
 }
@@ -22,4 +27,20 @@
 .row .col {
     padding: 0;
     margin-right: 10px;
+    max-width: 300px;
+}
+
+.blue-grey {
+
+    &:hover {
+        background-color: lighten(#607d8b, 5%) !important;
+    }
+}
+
+#Datepickk .d-table input + label {
+    height: 100px;
+    border: 1px solid lightgray;
+}
+#Datepickk .d-tables {
+    background-color: #F6E9DC;
 }

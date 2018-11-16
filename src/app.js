@@ -8,13 +8,19 @@ import Board from './views/Board';
 
 export default class App {
   constructor(mainElement = document.querySelector('body')) {
-    const calendar = new Calendar({ name: 'Calendar' });
+    let calendar = new Calendar({ name: 'Calendar' });
     const board = new Board({
       columns: []
     });
+
     const outlet = document.querySelector('#outlet');
 
+
     this.eventBus = new EventBus();
+
+    if (window.location.hash === '#main') {
+      console.log('window.location.hash === #main')
+    }
     
     this.eventBus.subscribe('routeChanged', (page) => {
       switch (page) {
@@ -22,6 +28,7 @@ export default class App {
           calendar.isMounted && calendar.unmount();
           board.mountTo(document.querySelector('#outlet'));
           break;
+
         case 'calendar':
           board.isMounted && board.unmount();
           calendar.mountTo(document.querySelector('#outlet'));
@@ -31,6 +38,7 @@ export default class App {
       }
     });
 
+    
     
     this.router = new Router({
       '#main': () => {
@@ -46,6 +54,8 @@ export default class App {
       .then((columns) => {
         console.log('got data from server', columns);
         board.model.columns = columns;
+        this.eventBus.publish('routeChanged', 'main');
+
       })
       .catch((e) => {
         console.log('Error!', e);
@@ -55,9 +65,9 @@ export default class App {
   template = t`
     <header class='header'>
       <nav>
-        <div class="nav-wrapper">
-        <a class="brand-logo">Prello</a>
-        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <div class="nav-wrapper container">
+          <a class="brand-logo">Prello</a>
+          <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href='#main'>main</a></li>
             <li><a href='#calendar'>calendar</a></li>
