@@ -29,6 +29,8 @@ export default class Component {
     this.rootElement = root;
     this.clearRoot();
     this.update();
+    this.patchEvents();
+
     !this.isMounted && this.attachEvents();
     this.rootElement.appendChild(this.containerElement);
     this.isMounted = true;
@@ -40,6 +42,22 @@ export default class Component {
    */
   eventMap = {};
 
+  patchEvents() {
+    for (let key in this.eventMap) {
+      const handler = this.eventMap[key];
+      const [eventName, query] = key.split(' @@ ');
+      const patchedHandler = (event) => {
+        if (
+          event.type === eventName &&
+          Array.from(document.querySelectorAll(query)).includes(event.target)
+        ) {
+          handler(event);
+        }
+      }
+      this.eventMap[key] = patchedHandler;
+    }
+  }
+
   onComponentMount = () => {};
   onComponentUpdate = () => {};
   onComponentDestroy = () => {};
@@ -50,14 +68,8 @@ export default class Component {
 
   attachEvents() {
     for (let key in this.eventMap) {
-      const [eventName, query] = key.split(' @@ ');
-      this.containerElement.addEventListener(eventName, (event) => {
-        if (
-          Array.from(document.querySelectorAll(query)).includes(event.target)
-        ) {
-          this.eventMap[key](event);
-        }
-      });
+      const [eventName] = key.split(' @@ ');
+      this.containerElement.addEventListener(eventName, this.eventMap[key]);
     }
   }
 
@@ -78,13 +90,7 @@ export default class Component {
   unmount() {
     for (let key in this.eventMap) {
       const [eventName, query] = key.split(' @@ ');
-      this.containerElement.removeEventListener(eventName, (event) => {
-        if (
-          Array.from(document.querySelectorAll(query)).includes(event.target)
-        ) {
-          this.eventMap[key](event);
-        }
-      });
+      this.containerElement.removeEventListener(eventName, this.eventMap[key]);
     }
     this.clearRoot();
     this.isMounted = false;
