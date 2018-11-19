@@ -7,7 +7,6 @@ export default class Component {
 
     /* create observable from passed data argument. Set this.update as a callback fn to observe any data update. Assign it to 'this.model' attribute */
     this.model = observe(data, this.update);
-
     /* set isMounted flag to false, since there is no HTML representation of this view yet, just an object */
     this.isMounted = false;
 

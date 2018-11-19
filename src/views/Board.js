@@ -1,4 +1,4 @@
-import { Component, t } from '../framework';
+import { Component, t, Utils } from '../framework';
 import { createColumn, removeColumn, createPost, removePost, updatePost, toggleItem } from '../api';
 //import Materialize from 'materialize-css';
 import Sortable from 'sortablejs';
@@ -17,7 +17,7 @@ export default class Board extends Component {
     'click @@ .new-section a i': () => {
       const newColumn = {
         name: `column`,
-        id: (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16),
+        id: Utils.generateId(6),
         items: []
       };
       newColumn.name = `${newColumn.name}-${newColumn.id}`;
@@ -87,12 +87,6 @@ export default class Board extends Component {
       .then(() => {
         console.log('successguly toggled item');
       });
-
-      //let target = (id === '000000') ? alert(1) : alert(2);
-
-      // parent.removeChild(item);
-      // target.insertBefore(item, target.childNodes[0]);
-
     },
 
 
@@ -163,7 +157,7 @@ export default class Board extends Component {
             console.log(e);
           });
         } else {
-          this.postModalData.id = this.postModalData.id || (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16);
+          this.postModalData.id = this.postModalData.id || Utils.generateId(6);
   
           createPost(this.postModalData, this.currentColumnId)
             .then(() => {
@@ -201,7 +195,7 @@ export default class Board extends Component {
   
   openPostModal(data){
     console.log(data);
-    this.postModalData = data;
+    this.postModalData = { ...data };
     this.modal = M.Modal.init(document.querySelector('.modal'));
     this.modal.open();
 
