@@ -87,3 +87,21 @@ export const updatePost = (postData, currentColumnId) => {
     }
   }); 
 }
+
+export const toggleItem = ({ srcColId, itemId, destColId }) => {
+  return fetch(`${rootUrl}/columns/toggle`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ srcColId, itemId, destColId })
+  })
+  .then((res) => {
+    if(res.ok) {
+      return res.text();
+    } else {
+      throw new Error('something wrong with server');
+    }
+  })
+}

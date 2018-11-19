@@ -100,7 +100,7 @@ body {
                 text-align: right;
             }
 
-              span {
+            .remove-post {
                   position: absolute;
                   right: 0;
                   top: 0;
@@ -111,6 +111,12 @@ body {
                     }
                   }
               }
+            .shift-post {
+                position: absolute;
+                right: 20px;
+                top: 0;
+            }
+            
               a {
                   margin-top: 10px;
               }

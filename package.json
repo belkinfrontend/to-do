@@ -34,6 +34,7 @@
     "datepickk": "^1.4.1",
     "gulp": "^3.9.1",
     "html5sortable": "^0.9.8",
-    "materialize-css": "^1.0.0-rc.2"
+    "materialize-css": "^1.0.0-rc.2",
+    "sortablejs": "^1.7.0"
   }
 }

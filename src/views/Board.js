@@ -1,11 +1,16 @@
 import { Component, t } from '../framework';
-import { createColumn, removeColumn, createPost, removePost, updatePost } from '../api';
+import { createColumn, removeColumn, createPost, removePost, updatePost, toggleItem } from '../api';
 //import Materialize from 'materialize-css';
+import Sortable from 'sortablejs';
+
+
 
 
 export default class Board extends Component {
   constructor(data) {
     super(data);
+
+ 
   }
 
   eventMap = {
@@ -28,6 +33,21 @@ export default class Board extends Component {
           console.log(e);
         });
 
+        Sortable.create("000000", {
+          animation: 200,
+          group: {
+              name: "shared",
+              //pull: "clone",
+              revertClone: true,
+          },
+          sort: true
+      });
+      
+        Sortable.create("000001", {
+            group: "shared",
+            sort: false
+        });
+
     },
     'click @@ .remove-column': ({ target }) => {
       const columnId = target.id;
@@ -43,6 +63,7 @@ export default class Board extends Component {
     },
 
     // ====== REMOVE POST ====== //
+
 
     'click @@ .remove-post': ({ target }) => {
       
@@ -65,6 +86,29 @@ export default class Board extends Component {
         });
     },
 
+
+    // ====== Moving to other column ===== //
+    'click @@ .shift-post': ({ target }) => {
+      // this.shiftPost(target);
+      const srcColId = 'src';
+      const itemId = 'item';
+      const destColId = 'dest';
+
+      toggleItem({
+        srcColId,
+        itemId,
+        destColId
+      })
+      .then(() => {
+        console.log('successguly toggled item');
+      });
+
+      //let target = (id === '000000') ? alert(1) : alert(2);
+
+      // parent.removeChild(item);
+      // target.insertBefore(item, target.childNodes[0]);
+
+    },
 
 
     // ====== UPDATE POST ====== //
@@ -194,8 +238,29 @@ export default class Board extends Component {
     } else {
       return null;
     }
-
   }
+
+  shiftPost = (target) => {
+    console.log(target);
+      let item = target.parentNode.parentNode;
+        console.log(item);
+      let parent = item.parentNode;
+        console.log(parent);
+      let id = parent.parentNode.dataset.columnid;
+        console.log(id);
+      let dataset = parent.parentNode.dataset;
+      console.log(dataset);
+      
+      //===== Check if the item should be added to the completed list or to re-added to the todo list
+      let targetColumn = (id === '000000') ? document.getElementById('000001') : document.getElementById('000000');
+      console.log(targetColumn);
+      parent.removeChild(item);
+      console.log(targetColumn.children[1]);
+      targetColumn.children[1].insertBefore(item, targetColumn.children[1].childNodes[0]);
+
+
+
+}
 
   createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id} draggable="true">
 
@@ -205,12 +270,13 @@ export default class Board extends Component {
       <p class="date">${date}</p>
       <p class="date">${time}</p>
       <span><i class="material-icons remove-post red-text text-darken-3" id=${id}>delete</i></span>
+      <span><i class="material-icons shift-post red-text text-darken-3">assignment_turned_in</i></span>
       <p>
         <a class="waves-effect waves-light btn-small buttonUpdatePost" id=${id}>Edit post</a>
       </p>
     </li>`;
 
-  createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id}>
+  createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id} id=${id}>
         <header>
           <h5>${name}<i class="material-icons remove-column red-text text-darken-3" id="${id}">delete</i></h5>
           
