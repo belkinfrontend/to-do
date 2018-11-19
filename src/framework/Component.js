@@ -78,8 +78,10 @@ export default class Component {
   unmount() {
     for (let key in this.eventMap) {
       const [eventName, query] = key.split(' @@ ');
-      this.containerElement.removeEventListener(eventName, event => {
-        if (event.target === document.querySelector(query)) {
+      this.containerElement.removeEventListener(eventName, (event) => {
+        if (
+          Array.from(document.querySelectorAll(query)).includes(event.target)
+        ) {
           this.eventMap[key](event);
         }
       });
