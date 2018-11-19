@@ -32,23 +32,8 @@ export default class Board extends Component {
           // hide loader
           console.log(e);
         });
-
-        Sortable.create("000000", {
-          animation: 200,
-          group: {
-              name: "shared",
-              //pull: "clone",
-              revertClone: true,
-          },
-          sort: true
-      });
-      
-        Sortable.create("000001", {
-            group: "shared",
-            sort: false
-        });
-
     },
+
     'click @@ .remove-column': ({ target }) => {
       const columnId = target.id;
       console.log(columnId);
@@ -230,7 +215,7 @@ export default class Board extends Component {
     const column = this.model.columns.find(c => c.id === columnId);
     console.log(column);
 
-    if (column){
+    if (column) {
       document.querySelector('#buttonCreatePost').textContent = 'update';
       document.querySelector('.modal-content h4').textContent = 'Update this post';
       
@@ -242,28 +227,24 @@ export default class Board extends Component {
 
   shiftPost = (target) => {
     console.log(target);
-      let item = target.parentNode.parentNode;
-        console.log(item);
-      let parent = item.parentNode;
-        console.log(parent);
-      let id = parent.parentNode.dataset.columnid;
-        console.log(id);
-      let dataset = parent.parentNode.dataset;
-      console.log(dataset);
-      
-      //===== Check if the item should be added to the completed list or to re-added to the todo list
-      let targetColumn = (id === '000000') ? document.getElementById('000001') : document.getElementById('000000');
-      console.log(targetColumn);
-      parent.removeChild(item);
-      console.log(targetColumn.children[1]);
-      targetColumn.children[1].insertBefore(item, targetColumn.children[1].childNodes[0]);
-
-
-
-}
+    let item = target.parentNode.parentNode;
+      console.log(item);
+    let parent = item.parentNode;
+      console.log(parent);
+    let id = parent.parentNode.dataset.columnid;
+      console.log(id);
+    let dataset = parent.parentNode.dataset;
+    console.log(dataset);
+    
+    //===== Check if the item should be added to the completed list or to re-added to the todo list
+    let targetColumn = (id === '000000') ? document.getElementById('000001') : document.getElementById('000000');
+    console.log(targetColumn);
+    parent.removeChild(item);
+    console.log(targetColumn.children[1]);
+    targetColumn.children[1].insertBefore(item, targetColumn.children[1].childNodes[0]);
+  }
 
   createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id} draggable="true">
-
       <p>id = ${id}</p>
       <p>${title}</p>
       <p>${text}</p>
@@ -310,7 +291,7 @@ export default class Board extends Component {
               <textarea id="text" class="materialize-textarea" data-length="1000" style="height: 45px;"></textarea>
               <label for="text" class="">Description</label>
           </div>
-          </div>
+        </div>
         <div class="modal-footer">
             <a class="waves-effect waves-light btn" id="buttonCreatePost"></a>
         </div>
