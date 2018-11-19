@@ -88,11 +88,16 @@ export default class Board extends Component {
 
 
     // ====== Moving to other column ===== //
-    'click @@ .shift-post': ({ target }) => {
-      // this.shiftPost(target);
-      const srcColId = 'src';
-      const itemId = 'item';
-      const destColId = 'dest';
+    'click @@ .toggle-post': ({ target }) => {
+      
+      const srcColId = target.closest('section').dataset.columnid;
+      console.log(srcColId);
+      
+      const itemId = target.closest('li').dataset.postid;
+      console.log(itemId);
+      
+      const destColId = '000001';
+      console.log(destColId);
 
       toggleItem({
         srcColId,
@@ -101,13 +106,23 @@ export default class Board extends Component {
       })
       .then(() => {
         console.log('successguly toggled item');
+        
+        const currentColumn = this.model.columns.find(({ id }) => id === srcColId);
+        console.log(currentColumn);
+
+        const destColumn = this.model.columns.find(({ id }) => id === destColId);
+        console.log(destColumn);
+        
+        currentColumn.items = currentColumn.items.filter(({ id }) => id !== itemId);
+        console.log(currentColumn.items);
+
+        destColumn.items.push(itemId);
+        console.log(destColumn.items);
+
+        
+
+        
       });
-
-      //let target = (id === '000000') ? alert(1) : alert(2);
-
-      // parent.removeChild(item);
-      // target.insertBefore(item, target.childNodes[0]);
-
     },
 
 
@@ -240,27 +255,9 @@ export default class Board extends Component {
     }
   }
 
-  shiftPost = (target) => {
-    console.log(target);
-      let item = target.parentNode.parentNode;
-        console.log(item);
-      let parent = item.parentNode;
-        console.log(parent);
-      let id = parent.parentNode.dataset.columnid;
-        console.log(id);
-      let dataset = parent.parentNode.dataset;
-      console.log(dataset);
-      
-      //===== Check if the item should be added to the completed list or to re-added to the todo list
-      let targetColumn = (id === '000000') ? document.getElementById('000001') : document.getElementById('000000');
-      console.log(targetColumn);
-      parent.removeChild(item);
-      console.log(targetColumn.children[1]);
-      targetColumn.children[1].insertBefore(item, targetColumn.children[1].childNodes[0]);
+  toggleItem = (target) => {
 
-
-
-}
+  }
 
   createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id} draggable="true">
 
@@ -270,13 +267,13 @@ export default class Board extends Component {
       <p class="date">${date}</p>
       <p class="date">${time}</p>
       <span><i class="material-icons remove-post red-text text-darken-3" id=${id}>delete</i></span>
-      <span><i class="material-icons shift-post red-text text-darken-3">assignment_turned_in</i></span>
+      <span><i class="material-icons toggle-post red-text text-darken-3">assignment_turned_in</i></span>
       <p>
         <a class="waves-effect waves-light btn-small buttonUpdatePost" id=${id}>Edit post</a>
       </p>
     </li>`;
 
-  createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id} id=${id}>
+  createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id}>
         <header>
           <h5>${name}<i class="material-icons remove-column red-text text-darken-3" id="${id}">delete</i></h5>
           
