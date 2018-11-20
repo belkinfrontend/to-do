@@ -29,12 +29,13 @@ export const createColumn = (columnData) => {
 export const removeColumn = (columnId) => {
   return fetch(`${rootUrl}/columns/${columnId}`, { method: 'DELETE' })
     .then((res) => {
-      if(res.ok) {
-        return res.json();
-      } else {
-        throw new Error('something wrong with server');
-      }
-    });   
+      // if(res.ok) {
+      //   return res.json();
+      // } else {
+      //   throw new Error('Error on server');
+      // }
+      return res.json();
+    });
 }
 
 export const createPost = (postData, columnId) => {
@@ -99,7 +100,7 @@ export const toggleItem = ({ srcColId, itemId, destColId }) => {
   })
   .then((res) => {
     if(res.ok) {
-      return res.text();
+      return res.json();
     } else {
       throw new Error('something wrong with server');
     }

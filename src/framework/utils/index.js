@@ -9,7 +9,7 @@ export const observe = (obj, cb) => {
     set(target, key, value) {
       if (target[key] !== value) {
         Reflect.set(target, key, value);
-        cb && cb(...arguments);
+        cb && setTimeout(() => { cb(...arguments); }, 0);
       }
       return true;
     }

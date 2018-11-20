@@ -4,13 +4,9 @@ import { createColumn, removeColumn, createPost, removePost, updatePost, toggleI
 import Sortable from 'sortablejs';
 
 
-
-
 export default class Board extends Component {
   constructor(data) {
     super(data);
-
- 
   }
 
   eventMap = {
@@ -26,57 +22,34 @@ export default class Board extends Component {
         .then(() => {
           // hide loader
           this.model.columns.push(newColumn);
-          console.log(this.model.columns);
         })
         .catch((e) => {
           // hide loader
           console.log(e);
         });
-
-        Sortable.create("000000", {
-          animation: 200,
-          group: {
-              name: "shared",
-              //pull: "clone",
-              revertClone: true,
-          },
-          sort: true
-      });
-      
-        Sortable.create("000001", {
-            group: "shared",
-            sort: false
-        });
-
     },
+
     'click @@ .remove-column': ({ target }) => {
       const columnId = target.id;
-      console.log(columnId);
 
       removeColumn(columnId)
-        .then(() => {
-          this.model.columns = this.model.columns.filter(({ id }) => id !== columnId);
+        .then((response) => {
+          if (response.error) {
+            throw new Error(response.message);
+          } else {
+            this.model.columns = this.model.columns.filter(({ id }) => id !== columnId);
+          }
         })
         .catch((e) => {
-          console.log(e);
+          M.toast({ html: e.message });
         });
     },
 
-    // ====== REMOVE POST ====== //
-
-
     'click @@ .remove-post': ({ target }) => {
-      
       const currentPostId = target.id;
-      console.log("currentPostId = " + currentPostId);
-
       const currentColumnId = target.closest('section').dataset.columnid;
-      console.log("currentColumnId = " + currentColumnId);
-
-      //postTarget.parentNode.parentNode.remove();
 
       removePost(currentPostId, currentColumnId)
-
         .then(() => {
           const currentColumn = this.model.columns.find(({ id }) => id === currentColumnId);
           currentColumn.items = currentColumn.items.filter(({ id }) => id !== currentPostId);
@@ -86,50 +59,25 @@ export default class Board extends Component {
         });
     },
 
-
-    // ====== Moving to other column ===== //
     'click @@ .toggle-post': ({ target }) => {
-      
       const srcColId = target.closest('section').dataset.columnid;
-      console.log(srcColId);
-      
       const itemId = target.closest('li').dataset.postid;
-      console.log(itemId);
-      
       const destColId = '000001';
-      console.log(destColId);
 
       toggleItem({
         srcColId,
         itemId,
         destColId
       })
-      .then(() => {
-        console.log('successguly toggled item');
-        
-        const currentColumn = this.model.columns.find(({ id }) => id === srcColId);
-        console.log(currentColumn);
-
-        const destColumn = this.model.columns.find(({ id }) => id === destColId);
-        console.log(destColumn);
-        
-        currentColumn.items = currentColumn.items.filter(({ id }) => id !== itemId);
-        console.log(currentColumn.items);
-
-        destColumn.items.push(itemId);
-        console.log(destColumn.items);
-
-        
-
-        
+      .then((columns) => {
+        this.model.columns = columns;
       });
     },
 
-
-    // ====== UPDATE POST ====== //
-
+    /**
+     * 
+     */
     'click @@ .buttonUpdatePost': ({ target }) => {
-
       this.currentColumnId = target.closest('section').dataset.columnid;
       const currentPostId = target.closest('li').dataset.postid;
       const post = this.getPost(this.currentColumnId, currentPostId);
@@ -151,11 +99,8 @@ export default class Board extends Component {
       this.postModalData.title = document.querySelector('#title').value;
       this.postModalData.text = document.querySelector('#text').value;
       this.postModalData.date = this.formatDate(new Date());
-      this.postModalData.time = ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2);
+      this.postModalData.time = ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2);      
 
-      console.log(this.postModalData.title, this.postModalData.text, document.querySelector('#text').value);
-      
-      // ============= validate text, title, etc.
       const escapeHtml = (text) => {
         let map = {
           '&': '&amp;',
@@ -169,24 +114,20 @@ export default class Board extends Component {
       }
       this.postModalData.title = escapeHtml(this.postModalData.title);
       this.postModalData.text = escapeHtml(this.postModalData.text);
-      
-      //=========== checking for filling title
+
       if(this.postModalData) {
         if (this.postModalData.id){
           updatePost(this.postModalData, this.currentColumnId)
           .then(()=>{
             const column = this.model.columns
               .find((columnData) => columnData.id === this.currentColumnId);
-
             column.items = column.items.map(item => {
-                if (item.id === this.postModalData.id){
+                if (item.id === this.postModalData.id) {
                   return this.postModalData;
                 } else {
                   return item;
                 }
               });
-
-              // this.model.columns
           })
           .catch((e) => {
             // hide loader
@@ -230,8 +171,7 @@ export default class Board extends Component {
   }
   
   openPostModal(data){
-    console.log(data);
-    this.postModalData = data;
+    this.postModalData = { ...data };
     this.modal = M.Modal.init(document.querySelector('.modal'));
     this.modal.open();
 
@@ -241,9 +181,7 @@ export default class Board extends Component {
   }
 
   getPost(columnId, postId){
-    console.log('looking for post =>', columnId, postId);
     const column = this.model.columns.find(c => c.id === columnId);
-    console.log(column);
 
     if (column){
       document.querySelector('#buttonCreatePost').textContent = 'update';
@@ -260,7 +198,6 @@ export default class Board extends Component {
   }
 
   createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id} draggable="true">
-
       <p>id = ${id}</p>
       <p>${title}</p>
       <p>${text}</p>
@@ -289,6 +226,7 @@ export default class Board extends Component {
 
   render = () => t`
     <div class="board row">
+      <div class="error-container"></div>
       ${this.model.columns.map(this.createColumn).join('')}
       <section class="new-section col s12 m4 l4 valign-wrapper" >
         <a class="btn-floating pulse center-align"><i class="material-icons">add</i></a>

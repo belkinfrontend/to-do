@@ -27,6 +27,17 @@ body {
     .board {
       background: slategrey;
       min-height: 100vh;
+
+      .error-container {
+          position: absolute;
+          display: none;
+          color: red;
+          background-color: yellow;
+          width: 80%;
+          height: 4rem;
+          top: 10%;
+          left: 10%;
+      }
       
       .col {
         min-height: 500px;
