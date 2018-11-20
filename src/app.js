@@ -4,7 +4,7 @@ import styles from './app.scss';
 
 import Calendar from './views/Calendar';
 import Board from './views/Board';
-
+import M from 'materialize-css';
 
 
 export default class App {
