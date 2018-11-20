@@ -2,6 +2,10 @@ import { Component, t } from '../framework';
 import { createColumn, removeColumn, createPost, removePost, updatePost, toggleItem } from '../api';
 //import Materialize from 'materialize-css';
 import Sortable from 'sortablejs';
+import { escapeHtml, escapeBackHtml, formatDate } from '../framework/utils/index';
+
+import M from 'materialize-css';
+//import 'materialize-css/dist/css/materialize.min.css';
 
 
 export default class Board extends Component {
@@ -12,11 +16,10 @@ export default class Board extends Component {
   eventMap = {
     'click @@ .new-section a i': () => {
       const newColumn = {
-        name: `column`,
+        name: `new column`,
         id: (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16),
         items: []
       };
-      newColumn.name = `${newColumn.name}-${newColumn.id}`;
       // show loader
       createColumn(newColumn)
         .then(() => {
@@ -63,20 +66,19 @@ export default class Board extends Component {
       const srcColId = target.closest('section').dataset.columnid;
       const itemId = target.closest('li').dataset.postid;
       const destColId = '000001';
-
-      toggleItem({
-        srcColId,
-        itemId,
-        destColId
-      })
-      .then((columns) => {
-        this.model.columns = columns;
-      });
+      
+      if (destColId !== srcColId) {
+        toggleItem({
+          srcColId,
+          itemId,
+          destColId
+        })
+        .then((columns) => {
+          this.model.columns = columns;
+        });
+      }
     },
 
-    /**
-     * 
-     */
     'click @@ .buttonUpdatePost': ({ target }) => {
       this.currentColumnId = target.closest('section').dataset.columnid;
       const currentPostId = target.closest('li').dataset.postid;
@@ -96,24 +98,10 @@ export default class Board extends Component {
     'click @@ #buttonCreatePost': () => {
       console.log(document.querySelectorAll('#text'));
       
-      this.postModalData.title = document.querySelector('#title').value;
-      this.postModalData.text = document.querySelector('#text').value;
-      this.postModalData.date = this.formatDate(new Date());
+      this.postModalData.title = escapeHtml(document.querySelector('#title').value);
+      this.postModalData.text = escapeHtml(document.querySelector('#text').value);
+      this.postModalData.date = formatDate(new Date());
       this.postModalData.time = ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2);      
-
-      const escapeHtml = (text) => {
-        let map = {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          '\'': '&#039;'
-        };
-      
-        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-      }
-      this.postModalData.title = escapeHtml(this.postModalData.title);
-      this.postModalData.text = escapeHtml(this.postModalData.text);
 
       if(this.postModalData) {
         if (this.postModalData.id){
@@ -154,21 +142,6 @@ export default class Board extends Component {
       }
     }
   }
-
-  formatDate(date) {
-    let monthNames = [
-      "January", "February", "March",
-      "April", "May", "June", "July",
-      "August", "September", "October",
-      "November", "December"
-    ];
-  
-    let day = date.getDate();
-    let monthIndex = date.getMonth();
-    let year = date.getFullYear();
-  
-    return day + ' ' + monthNames[monthIndex] + ' ' + year;
-  }
   
   openPostModal(data){
     this.postModalData = { ...data };
@@ -177,6 +150,7 @@ export default class Board extends Component {
 
     document.querySelector('#title').focus();
     document.querySelector('#title').value = data.title || '';
+    
     document.querySelector('#text').value = data.text || '';
   }
 
@@ -198,38 +172,41 @@ export default class Board extends Component {
   }
 
   createPost = ({ id, title, text, date, time }) => t`<li data-postId=${id} draggable="true">
-      <p>id = ${id}</p>
-      <p>${title}</p>
-      <p>${text}</p>
-      <p class="date">${date}</p>
-      <p class="date">${time}</p>
-      <span><i class="material-icons remove-post red-text text-darken-3" id=${id}>delete</i></span>
-      <span><i class="material-icons toggle-post red-text text-darken-3">assignment_turned_in</i></span>
-      <p>
-        <a class="waves-effect waves-light btn-small buttonUpdatePost" id=${id}>Edit post</a>
-      </p>
+      <p class="post-title">${title}</p>
+      <p class="post-description">${text}</p>
+      <div class="date">
+        <p>${date}</p>
+        <p>${time}</p>
+      </div>
+      
+      <div class="post-icons">
+        <span title="Edit post"><i class="material-icons buttonUpdatePost green-text text-darken-3 id=${id}">edit</i></span>
+        <span title="Replace post"><i class="material-icons toggle-post green-text text-darken-3">done</i></span>
+        <span title="Remove post"><i class="material-icons remove-post red-text text-darken-3" id=${id}>delete</i></span>
+      </div>  
     </li>`;
 
   createColumn = ({ name, items, id }) => t`<section class="col s12 m6 l4" data-columnId=${id}>
+      <div class="wrapper">
         <header>
           <h5>${name}<i class="material-icons remove-column red-text text-darken-3" id="${id}">delete</i></h5>
           
-          <span>Add a new To Do</span>
-
-          <button data-target="modal1" data-columnId=${id} class="btn modalOpener blue-grey add-${id}">Modal</button>
+          <button data-target="modal1" data-columnId=${id} class="btn modalOpener blue-grey add-${id}">Add a new item</button>
         </header>
         <ul class="content js-sortable sortable">
           ${items.map(this.createPost).join('')}
         </ul>
+      </div>
     </section>`;
 
 
   render = () => t`
     <div class="board row">
-      <div class="error-container"></div>
       ${this.model.columns.map(this.createColumn).join('')}
-      <section class="new-section col s12 m4 l4 valign-wrapper" >
-        <a class="btn-floating pulse center-align"><i class="material-icons">add</i></a>
+      <section class="new-section col s12 m6 l4" >
+        <div class="wrapper valign-wrapper">
+          <a class="btn-floating pulse center-align"><i class="material-icons">add</i></a>
+          </div>
       </section>
 
       <div class="modal">
@@ -237,13 +214,13 @@ export default class Board extends Component {
           <h4></h4>
 
           <div class="input-field">
-              <input id="title" type="text" class="validate valid" required="" data-length="80">
-              <label for="title" class="">Header</label>
+              <input id="title" type="text" class="validate valid" placeholder="Enter title" required="" data-length="80">
+              <label for="title" class="active">Title</label>
           </div>
 
           <div class="input-field">
-              <textarea id="text" class="materialize-textarea" data-length="1000" style="height: 45px;"></textarea>
-              <label for="text" class="">Description</label>
+              <textarea id="text" class="materialize-textarea validate" placeholder="Enter description" style="height: 45px;"></textarea>
+              <label for="text" class="active">Description</label>
           </div>
           </div>
         <div class="modal-footer">
