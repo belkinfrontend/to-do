@@ -1,5 +1,5 @@
 import { Router, EventBus, t } from './framework';
-import { getColumns } from './api';
+import { getColumns, getItems } from './api';
 import styles from './app.scss';
 
 import Calendar from './views/Calendar';
@@ -9,13 +9,15 @@ import M from 'materialize-css';
 
 export default class App {
   constructor(mainElement = document.querySelector('body')) {
-    let calendar = new Calendar({ name: 'Calendar' });
+    let calendar = new Calendar({
+      name: 'Calendar',
+      items: []
+    });
     const board = new Board({
       columns: []
     });
 
-    const outlet = document.querySelector('#outlet');
-
+    // const outlet = document.querySelector('#outlet');
 
     this.eventBus = new EventBus();
 
@@ -39,8 +41,6 @@ export default class App {
       }
     });
 
-    
-    
     this.router = new Router({
       '#main': () => {
         this.eventBus.publish('routeChanged', 'main');
@@ -53,10 +53,16 @@ export default class App {
 
     getColumns()
       .then((columns) => {
-        console.log('got data from server', columns);
         board.model.columns = columns;
         this.eventBus.publish('routeChanged', 'main');
+      })
+      .catch((e) => {
+        console.log('Error!', e);
+      });
 
+    getItems()
+      .then((items) => {
+        calendar.model.items = items;
       })
       .catch((e) => {
         console.log('Error!', e);
