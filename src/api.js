@@ -106,3 +106,14 @@ export const toggleItem = ({ srcColId, itemId, destColId }) => {
     }
   })
 }
+
+export const getItems = () => {
+  return fetch(`${rootUrl}/columns/items`)
+    .then((res) => {
+      if(res.ok) {
+        return res.json();
+      } else {
+        throw new Error('something wrong with server');
+      }
+    });
+}
