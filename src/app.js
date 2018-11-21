@@ -22,7 +22,7 @@ export default class App {
     this.eventBus = new EventBus();
 
     if (window.location.hash === '#main') {
-      console.log('window.location.hash === #main')
+      console.log('window.location.hash === #main');
     }
     
     this.eventBus.subscribe('routeChanged', (page) => {
@@ -54,7 +54,18 @@ export default class App {
     getColumns()
       .then((columns) => {
         board.model.columns = columns;
-        this.eventBus.publish('routeChanged', 'main');
+
+        if (window.location.hash === '#main') {
+          console.log('window.location.hash === #main');
+          this.eventBus.publish('routeChanged', 'main');
+        }
+        else if (window.location.hash === '#calendar') {
+          console.log('window.location.hash === #calendar');
+          this.eventBus.publish('routeChanged', 'calendar');
+        }
+        else {
+          this.eventBus.publish('routeChanged', 'main');
+        }
       })
       .catch((e) => {
         console.log('Error!', e);
@@ -73,7 +84,7 @@ export default class App {
     <header class='header'>
       <nav>
         <div class="nav-wrapper container">
-          <a class="brand-logo">Prello</a>
+          <a class="brand-logo">To Do</a>
           <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href='#main'>main</a></li>
@@ -94,9 +105,8 @@ export default class App {
 
     document.querySelector('.sidenav-trigger').addEventListener('click', function() {
       
-      this.sidenav = M.Sidenav.init(document.querySelector('.sidenav'));
+      this.sidenav = M.Sidenav.init(document.querySelector('.sidenav'), {outDuration: 500});
       this.sidenav.open();
-
     });
   }
 }

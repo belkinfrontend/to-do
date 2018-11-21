@@ -37,9 +37,6 @@ export default class Component {
     this.onComponentMount();
   }
 
-  /**
-   * 'eventName @@ elementQuery': callbackFn
-   */
   eventMap = {};
 
   patchEvents() {
@@ -84,7 +81,6 @@ export default class Component {
         this.rootElement.removeChild(this.rootElement.firstChild);
       }
     }
-    
   }
 
   unmount() {
