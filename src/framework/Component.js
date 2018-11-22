@@ -1,4 +1,4 @@
-import { observe, generateId } from './utils';
+import { observe, generateId } from './utils/utils';
 
 export default class Component {
   constructor(data = {}) {

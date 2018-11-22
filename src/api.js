@@ -29,11 +29,6 @@ export const createColumn = (columnData) => {
 export const removeColumn = (columnId) => {
   return fetch(`${rootUrl}/columns/${columnId}`, { method: 'DELETE' })
     .then((res) => {
-      // if(res.ok) {
-      //   return res.json();
-      // } else {
-      //   throw new Error('Error on server');
-      // }
       return res.json();
     });
 }
@@ -57,21 +52,17 @@ export const createPost = (postData, columnId) => {
 }
 
 export const removePost = (currentPostId, currentColumnId) => {
-  // console.log(postId, columnId);
-
   return fetch(`${rootUrl}/columns/${currentColumnId}/posts/${currentPostId}`, { method: 'DELETE' })
   .then((res) => {
     if(res.ok) {
       return res.json();
     } else {
-      throw new Error('something wrong with server');
+      throw new Error('Something wrong with server');
     }
   }); 
 }
 
 export const updatePost = (postData, currentColumnId) => {
-  console.log(postData, currentColumnId);
-
   return fetch(`${rootUrl}/columns/${currentColumnId}/posts/${postData.id}`, {
      method: 'PUT',
      headers: {
@@ -84,7 +75,7 @@ export const updatePost = (postData, currentColumnId) => {
     if(res.ok) {
       return res.json();
     } else {
-      throw new Error('something wrong with server');
+      throw new Error('Something wrong with server');
     }
   }); 
 }
@@ -113,7 +104,7 @@ export const getItems = () => {
       if(res.ok) {
         return res.json();
       } else {
-        throw new Error('something wrong with server');
+        throw new Error('Something wrong with server');
       }
     });
 }

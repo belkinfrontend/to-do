@@ -8,21 +8,15 @@ import M from 'materialize-css';
 
 export default class App {
   constructor(mainElement = document.querySelector('body')) {
-    let calendar = new Calendar({
-      name: 'Calendar',
-      items: []
-    });
     const board = new Board({
       columns: []
     });
-
-    // const outlet = document.querySelector('#outlet');
+    const calendar = new Calendar({
+      name: 'Calendar',
+      items: []
+    });
 
     this.eventBus = new EventBus();
-
-    if (window.location.hash === '#main') {
-      console.log('window.location.hash === #main');
-    }
     
     this.eventBus.subscribe('routeChanged', (page) => {
       switch (page) {
@@ -55,11 +49,9 @@ export default class App {
         board.model.columns = columns;
 
         if (window.location.hash === '#main') {
-          console.log('window.location.hash === #main');
           this.eventBus.publish('routeChanged', 'main');
         }
         else if (window.location.hash === '#calendar') {
-          console.log('window.location.hash === #calendar');
           this.eventBus.publish('routeChanged', 'calendar');
         }
         else {

@@ -1,11 +1,7 @@
 import { Component, t } from '../framework';
 import { createColumn, removeColumn, createPost, removePost, updatePost, toggleItem } from '../api';
-//import Materialize from 'materialize-css';
-import { escapeHtml, generateId, formatDate } from '../framework/utils/index';
-
+import { escapeHtml, generateId, formatDate } from '../framework/utils/utils';
 import M from 'materialize-css';
-//import 'materialize-css/dist/css/materialize.min.css';
-
 
 export default class Board extends Component {
   constructor(data) {

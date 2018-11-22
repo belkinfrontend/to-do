@@ -1,4 +1,4 @@
-import * as utils from './utils';
+import * as utils from './utils/utils';
 import Component from './Component';
 import EventBus from './eventBus';
 import router from './router';

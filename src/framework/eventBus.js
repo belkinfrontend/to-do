@@ -5,10 +5,6 @@ export default class EventBus {
     if (instance) return instance;
 
     this.events = new Map();
-    /* this.events = {
-      someEvent: [ () => {}, () => {} ]
-    };
-    */
     instance = this;
   }
 

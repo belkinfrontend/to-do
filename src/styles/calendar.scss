@@ -9,7 +9,6 @@
 }
 
 .js-calendar {
-
     -webkit-touch-callout: none; 
     -webkit-user-select: none; 
     -khtml-user-select: none; 
@@ -26,7 +25,6 @@
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #DDD;
-    
 }
 
 .jscal-col {
@@ -278,14 +276,12 @@
     background-color: #F6F6F6;
 }
 
-.calendar-wrapper::-webkit-scrollbar
-{
+.calendar-wrapper::-webkit-scrollbar {
     width: 4px;
     background-color: #EEE;
 }
 
-.calendar-wrapper::-webkit-scrollbar-thumb
-{
+.calendar-wrapper::-webkit-scrollbar-thumb {
     background-color: #AAA;
 }
 
@@ -304,4 +300,4 @@
         float: right;
         margin-bottom: 15px;
     }
-  }
+}

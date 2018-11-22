@@ -1,39 +1,33 @@
-.btn-floating:hover {
-    background-color: lighten($secondary-color, 5%);
-}
-::-webkit-scrollbar {
-    width: 0px;  /* remove scrollbar space */
-    background: transparent;  /* optional: just make scrollbar invisible */
-}
-h1 {
-    margin: 0;
-}
 nav {
-    background-color: #e66053;
+    background-color: $header-bg-color;
 }
 #nav-mobile {
     text-transform: uppercase;
 }
-
+.btn-floating:hover {
+    background-color: lighten($secondary-color, 5%);
+}
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+h1 {
+    margin: 0;
+}
 .pulse {
     margin: 0 auto;
 }
-
 .row .col {
     padding: 0;
 }
-
 .blue-grey {
-
     &:hover {
         background-color: lighten(#607d8b, 5%) !important;
     }
 }
-
 textarea.materialize-textarea {
     overflow-y: scroll !important;
 }
-
 .modal-content h4 {
     margin-bottom: 30px;
 }

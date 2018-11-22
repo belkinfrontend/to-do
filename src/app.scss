@@ -1,9 +1,6 @@
-//@import "_reset";
-@import "_common";
-@import "_vars";
-@import "_override";
+@import "styles/_common";
+@import "styles/_vars";
+@import "styles/_override";
 
-@import "board";
-@import "calendar";
-
-
+@import "styles/board";
+@import "styles/calendar";
