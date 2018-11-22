@@ -28,7 +28,34 @@ export default class Calendar extends Component {
     let elem = document.querySelector("#calendar-container");
     let JSCalendar = LibName.JSCalendar;
     let JSCalendarEvent = LibName.JSCalendarEvent;
-    let calendar = new JSCalendar(elem, { daysVocab: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",] }).init().render();
+    const today = new Date();
+    const matrix = {
+      2018: {
+        10: {
+          22: [
+            {
+              displayname : "A very important meeting", 
+              at : new Date(today.getFullYear(), today.getMonth(), 12, 15, 30).getTime()
+            },
+            {
+              displayname : "A somewhat important 2 hours meeting", 
+              color : "rgb(113, 180, 193)",
+              at : new Date(today.getFullYear(), today.getMonth(), 12, 17, 30).getTime(),
+              duration : 1000 * 60 * 60 * 2
+            },
+            {
+              displayname : "This meeting is so important it's red", 
+              color : "#9c3d27",
+              at : new Date(today.getFullYear(), today.getMonth(), 12, 21, 55).toString()
+            }
+          ]
+        }
+      }
+    }
+    let calendar = new JSCalendar(
+      elem,
+      { daysVocab: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",] }
+    ).init().setMatrix(matrix).render();
   }
 
   render() {
