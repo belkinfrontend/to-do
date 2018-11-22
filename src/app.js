@@ -6,7 +6,6 @@ import Calendar from './views/Calendar';
 import Board from './views/Board';
 import M from 'materialize-css';
 
-
 export default class App {
   constructor(mainElement = document.querySelector('body')) {
     let calendar = new Calendar({

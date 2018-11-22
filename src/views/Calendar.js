@@ -3,44 +3,42 @@ import { getItems } from '../api';
 
 import M from 'materialize-css';
 
+import * as LibName from "vanilla-js-calendar";
+
+ 
+
 export default class Calendar extends Component {
   constructor(data) {
     super(data);
-
-
-    console.log(document.querySelector('.datepicker'));
-    M.Datepicker.init(document.querySelector('.datepicker'), {});
   }
 
   onComponentMount = () => {
-    console.log('calendar is mounted now!');
-
     getItems()
-
       .then((items) => {
         this.model.items = items;
       })
       .catch((e) => {
         console.log('Error!', e);
-      });
-
-      console.log(document.querySelector('.datepicker'));
-      document.querySelector('.datepicker').addEventListener('click', function() {
-        M.Datepicker.init(document.querySelector('.datepicker'));
-      })
-      
+      }); 
   }
-  
+
+  onComponentUpdate = () => {
+    console.log('calendar is mounted now!');
+
+    let elem = document.querySelector("#calendar-container");
+    let JSCalendar = LibName.JSCalendar;
+    let JSCalendarEvent = LibName.JSCalendarEvent;
+    let calendar = new JSCalendar(elem, { daysVocab: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",] }).init().render();
+  }
 
   render() {
     
     return t`
-      <div id="calendar-container">
-  
-        ${this.model.items.map((item) => item && item.day)}
-
-        <input type="text" class="datepicker">
-
+      <div class="calendar">
+        <div id="calendar-container"></div>
+        <div class='items'>
+          ${this.model.items.map((item) => item && item.day)}
+        </div>
       </div>`
   }
 }

@@ -1,8 +1,7 @@
 import { Component, t } from '../framework';
 import { createColumn, removeColumn, createPost, removePost, updatePost, toggleItem } from '../api';
 //import Materialize from 'materialize-css';
-import Sortable from 'sortablejs';
-import { escapeHtml, escapeBackHtml, formatDate } from '../framework/utils/index';
+import { escapeHtml, generateId, formatDate } from '../framework/utils/index';
 
 import M from 'materialize-css';
 //import 'materialize-css/dist/css/materialize.min.css';
@@ -17,17 +16,15 @@ export default class Board extends Component {
     'click @@ .new-section a i': () => {
       const newColumn = {
         name: `new column`,
-        id: (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16),
+        id: generateId(6),
         items: []
       };
-      // show loader
+
       createColumn(newColumn)
         .then(() => {
-          // hide loader
           this.model.columns.push(newColumn);
         })
         .catch((e) => {
-          // hide loader
           console.log(e);
         });
     },
@@ -113,7 +110,6 @@ export default class Board extends Component {
         return false;
       }
       this.postModalData.day  = new Date().getDate();
-      console.log(this.postModalData.day);
 
       this.postModalData.date = formatDate(new Date());
       this.postModalData.time = ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2);      
@@ -135,15 +131,13 @@ export default class Board extends Component {
                 });
             })
           .catch((e) => {
-            // hide loader
             console.log(e);
           });
         } else {
-          this.postModalData.id = this.postModalData.id || (Math.floor(Math.random()*16*16*16*16*16*16)).toString(16);
+          this.postModalData.id = this.postModalData.id || generateId(6);
   
           createPost(this.postModalData, this.currentColumnId)
             .then(() => {
-              // hide loader
               this.model.columns.forEach((columnData) => {
                 
                 if(columnData.id === this.currentColumnId) {
@@ -152,7 +146,6 @@ export default class Board extends Component {
               });
             })
             .catch((e) => {
-              // hide loader
               console.log(e);
             });
         }  
@@ -183,10 +176,6 @@ export default class Board extends Component {
     }
   }
 
-  toggleItem = (target) => {
-
-  }
-
   createPost = ({ id, title, text, day, date, time, isDone }) => t`<li class="${isDone ? 'isDone' : ''}" data-postId=${id} draggable="true">
       <p class="post-title">${title}</p>      
       <p class="post-description">${text}</p>
@@ -207,7 +196,6 @@ export default class Board extends Component {
         <header>
           <h5>${name}</h5>
           <i class="material-icons remove-column red-text text-darken-3" id="${id}">delete</i>
-          
           <button data-target="modal1" data-columnId=${id} class="btn modalOpener blue-grey add-${id}">Add a new item</button>
         </header>
         <ul class="content">
@@ -215,6 +203,25 @@ export default class Board extends Component {
         </ul>
       </div>
     </section>`;
+
+  modalWindow = () => t`
+    <div class="modal">
+      <div class="modal-content">
+        <h4></h4>
+        <div class="input-field">
+          <input id="title" type="text" class="validate valid" placeholder="Enter title" required="" data-length="80">
+          <label for="title" class="active">Title</label>
+        </div>
+        <div class="input-field">
+          <textarea id="text" class="materialize-textarea validate" placeholder="Enter description" style="height: auto !important;"></textarea>
+          <label for="text" class="active">Description</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="waves-effect waves-light btn" id="buttonCreatePost"></a>
+      </div>
+    </div>
+  `;
 
 
   render = () => t`
@@ -226,24 +233,7 @@ export default class Board extends Component {
           </div>
       </section>
 
-      <div class="modal">
-        <div class="modal-content">
-          <h4></h4>
-
-          <div class="input-field">
-              <input id="title" type="text" class="validate valid" placeholder="Enter title" required="" data-length="80">
-              <label for="title" class="active">Title</label>
-          </div>
-
-          <div class="input-field">
-              <textarea id="text" class="materialize-textarea validate" placeholder="Enter description" style="height: auto !important;"></textarea>
-              <label for="text" class="active">Description</label>
-          </div>
-        </div>
-        <div class="modal-footer">
-            <a class="waves-effect waves-light btn" id="buttonCreatePost"></a>
-        </div>
-      </div>
+      ${this.modalWindow()}
     </div>
   `;
 }

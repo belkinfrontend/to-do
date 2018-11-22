@@ -54,7 +54,7 @@ body {
             margin: 0;
             padding: 10px;
             max-width: 100%;
-            max-height: 550px;
+            max-height: 585px;
             overflow: scroll;
   
               &::-webkit-scrollbar {
@@ -81,6 +81,10 @@ body {
                     color: brown;
                     text-decoration: line-through;
                   }
+
+                &.isDone .post-icons span .toggle-post {
+                    display: none;
+                }
   
                 img {
                     cursor: pointer;
