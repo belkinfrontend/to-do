@@ -112,6 +112,7 @@ export default class Board extends Component {
       this.postModalData.day  = new Date().getDate();
 
       this.postModalData.date = formatDate(new Date());
+      this.postModalData.rawDate = new Date();
       this.postModalData.time = ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2);      
       this.postModalData.isDone = false;
 
