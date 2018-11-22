@@ -22,40 +22,52 @@ export default class Calendar extends Component {
       }); 
   }
 
+  parseCalendarEvents = (items) => {
+    let matrix = {};
+    const DONE_ITEM_COLOR = '#e91e63';
+    const ITEM_COLOR = '#2196f3';
+    items.forEach((item) => {
+      const rawDate = new Date(item.rawDate);
+      const title = item.title;
+      const isDone = item.isDone || false;
+
+      const year = rawDate.getFullYear();
+      const month = rawDate.getMonth();
+      const day = rawDate.getDate();
+
+      const at = rawDate.getTime();
+      if (!matrix[year]) {
+        matrix[year] = {};
+      }
+      if (!matrix[year][month]) {
+        matrix[year][month] = {};
+      }
+      if (!matrix[year][month][day]) {
+        matrix[year][month][day] = [];
+      }
+
+      matrix[year][month][day].push({
+        displayname: title,
+        at,
+        color: isDone ? DONE_ITEM_COLOR : ITEM_COLOR
+      });
+    });
+    return matrix;
+  }
+
   onComponentUpdate = () => {
     console.log('calendar is mounted now!');
 
     let elem = document.querySelector("#calendar-container");
     let JSCalendar = LibName.JSCalendar;
-    let JSCalendarEvent = LibName.JSCalendarEvent;
     const today = new Date();
-    const matrix = {
-      2018: {
-        10: {
-          22: [
-            {
-              displayname : "A very important meeting", 
-              at : new Date(today.getFullYear(), today.getMonth(), 12, 15, 30).getTime()
-            },
-            {
-              displayname : "A somewhat important 2 hours meeting", 
-              color : "rgb(113, 180, 193)",
-              at : new Date(today.getFullYear(), today.getMonth(), 12, 17, 30).getTime(),
-              duration : 1000 * 60 * 60 * 2
-            },
-            {
-              displayname : "This meeting is so important it's red", 
-              color : "#9c3d27",
-              at : new Date(today.getFullYear(), today.getMonth(), 12, 21, 55).toString()
-            }
-          ]
-        }
-      }
-    }
     let calendar = new JSCalendar(
       elem,
-      { daysVocab: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",] }
-    ).init().setMatrix(matrix).render();
+      {
+        views: [ 'week', 'month' ],
+        ampm: false
+      }
+    ).init().setMatrix(this.parseCalendarEvents(this.model.items)).render();
   }
 
   render() {
@@ -63,9 +75,6 @@ export default class Calendar extends Component {
     return t`
       <div class="calendar">
         <div id="calendar-container"></div>
-        <div class='items'>
-          ${this.model.items.map((item) => item && item.day)}
-        </div>
       </div>`
   }
 }
