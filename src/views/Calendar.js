@@ -60,7 +60,6 @@ export default class Calendar extends Component {
 
     let elem = document.querySelector("#calendar-container");
     let JSCalendar = LibName.JSCalendar;
-    const today = new Date();
     let calendar = new JSCalendar(
       elem,
       {
